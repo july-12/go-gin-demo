@@ -36,6 +36,16 @@ func PostIndex(c *gin.Context) {
 	c.JSON(http.StatusOK, posts)
 }
 
+func PostIndexOfUser(c *gin.Context) {
+
+	var posts []models.Post
+	userId := c.Param("id")
+	database.DB.Where("user_id = ?", userId).Find(&posts)
+	// database.DB.Preload(clause.Associations).Find(&posts)
+
+	c.JSON(http.StatusOK, posts)
+}
+
 func PostShow(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Post
