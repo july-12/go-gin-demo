@@ -2,8 +2,8 @@ package routes
 
 import (
 	"net/http"
-	database "starter-with-docker/config"
 	"starter-with-docker/controller"
+	database "starter-with-docker/db"
 	"starter-with-docker/models"
 
 	"starter-with-docker/middleware"
@@ -19,21 +19,15 @@ func Init(r *gin.Engine) {
 	PublicRoutes(public)
 
 	protect := gr.Group("/")
-	protect.Use(middleware.AuthRequired)
+	protect.Use(middleware.AuthorizedRoute)
 	ProtectRoutes(protect)
 
 }
 
 func PublicRoutes(r *gin.RouterGroup) {
-
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "home"})
-	})
-
 	r.POST("/signup", controller.Signup)
 	r.POST("/login", controller.Login)
 	r.POST("/logout", controller.Logout)
-
 }
 
 func ProtectRoutes(r *gin.RouterGroup) {
@@ -43,7 +37,6 @@ func ProtectRoutes(r *gin.RouterGroup) {
 		database.DB.Find(&facts)
 		c.JSON(http.StatusOK, facts)
 	})
-
 	r.POST("/fact", func(c *gin.Context) {
 		var fact models.Fact
 		c.BindJSON(&fact)
