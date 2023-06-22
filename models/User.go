@@ -11,5 +11,7 @@ type User struct {
 	Avatar   string `json:"avatar"`
 	Phone    string `json:"phone"`
 	Gender   string `json:"gender"`
-	Password string `json:"password"`
+	Password string `json:"-"`
+
+	// Posts []Post `json:"-"`
 }

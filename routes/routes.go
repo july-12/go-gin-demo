@@ -1,10 +1,7 @@
 package routes
 
 import (
-	"net/http"
 	"starter-with-docker/controller"
-	database "starter-with-docker/db"
-	"starter-with-docker/models"
 
 	"starter-with-docker/middleware"
 
@@ -28,28 +25,16 @@ func PublicRoutes(r *gin.RouterGroup) {
 	r.POST("/signup", controller.Signup)
 	r.POST("/login", controller.Login)
 	r.POST("/logout", controller.Logout)
+
+	r.GET("/posts/:id", controller.PostShow)
+	r.GET("/posts", controller.PostIndex)
+
+	r.GET("/users/:id", controller.UserShow)
+	r.GET("/users", controller.UserIndex)
 }
 
 func ProtectRoutes(r *gin.RouterGroup) {
 
-	r.GET("/facts", func(c *gin.Context) {
-		var facts []models.Fact
-		database.DB.Find(&facts)
-		c.JSON(http.StatusOK, facts)
-	})
-	r.POST("/fact", func(c *gin.Context) {
-		var fact models.Fact
-		c.BindJSON(&fact)
-		database.DB.Create(&fact)
-		var facts []models.Fact
-		database.DB.Find(&facts)
-		c.JSON(http.StatusOK, facts)
-	})
-
-	r.GET("/users", func(c *gin.Context) {
-		var users []models.User
-		database.DB.Find(&users)
-		c.JSON(http.StatusOK, users)
-	})
+	r.POST("/posts", controller.PostCreate)
 
 }
