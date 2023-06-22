@@ -28,12 +28,11 @@ func Signup(c *gin.Context) {
 		} else {
 			user.Password = string(passowrdHash)
 			database.DB.Create(&user)
-			if token, err := utils.GenerateToken(user.ID, passowrdHash); err != nil {
+			if token, err := utils.GenerateToken(user.ID); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"JwtFail": err})
 			} else {
 				c.JSON(http.StatusOK, token)
 				return
-
 			}
 		}
 	} else {
@@ -43,7 +42,25 @@ func Signup(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var input formInput
-	c.BindJSON(&input)
+	if err := c.BindJSON(&input); err == nil {
+		var user models.User
+		result := database.DB.Find(&user, "name = ?", input.Name)
+		if result.Error != nil {
+			c.JSON(http.StatusOK, gin.H{"user is unexist!": result.Error})
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+			c.JSON(http.StatusOK, gin.H{"wrong password!": err})
+		} else {
+			if token, err := utils.GenerateToken(user.ID); err != nil {
+				c.String(http.StatusNoContent, "")
+			} else {
+				c.JSON(http.StatusOK, token)
+			}
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+	}
 }
 
 func Logout(c *gin.Context) {
