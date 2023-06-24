@@ -26,6 +26,6 @@ func CommentCreate(c *gin.Context) {
 
 func CommentShow(c *gin.Context) {
 	var comments []models.Comment
-	database.DB.Where("post_id = ?", c.Param("id")).Find(&comments)
+	database.DB.Where("postId = ?", c.Param("id")).Find(&comments)
 	c.JSON(http.StatusOK, comments)
 }

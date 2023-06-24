@@ -1,14 +1,10 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Post struct {
-	gorm.Model
+	BaseModelWithAuthor
 	Title    string    `json:"title" gorm:"size:100;not null"`
 	Content  string    `json:"content" gorm:"text;not null"`
 	Comments []Comment `json:"-"`
-	UserID   uint      `json:"-"`
-	Author   User      `json:"-" gorm:"foreignKey:UserID"` // `json:"-"`
+
+	Tags []Tag `json:"tags" gorm:"many2many:post_tags"`
 }

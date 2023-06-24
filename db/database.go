@@ -30,9 +30,12 @@ func ConnectDb() {
 	}
 
 	log.Println("running Migrations")
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Post{})
-	db.AutoMigrate(&models.Comment{})
+	db.AutoMigrate(
+		&models.User{},
+		&models.Tag{},
+		&models.Post{},
+		&models.Comment{},
+	)
 
 	DB = db
 }

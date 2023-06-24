@@ -11,6 +11,7 @@ import (
 type postFormInput struct {
 	Title   string `form:"title" json:"title" binding:"required"`
 	Content string `form:"content" json:"Content"`
+	TagID   uint   `form:"tagId" json:"tagId"`
 }
 
 func PostCreate(c *gin.Context) {
@@ -24,7 +25,10 @@ func PostCreate(c *gin.Context) {
 	post.Title = input.Title
 	post.Content = input.Content
 	post.UserID = c.GetUint("currentUserId")
-	database.DB.Create(&post)
+
+	var tag models.Tag
+	database.DB.Find(&tag, input.TagID)
+	database.DB.Create(&post).Association("Tags").Append(&tag)
 	c.JSON(http.StatusOK, post)
 }
 
@@ -50,6 +54,6 @@ func PostShow(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Post
 	database.DB.Find(&post, id)
-	// database.DB.Preload("Author").Find(&post, id)
+	database.DB.Preload("Tags").Find(&post, id)
 	c.JSON(http.StatusOK, post)
 }
