@@ -6,6 +6,7 @@ import (
 	"starter-with-docker/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
 )
 
 type postFormInput struct {
@@ -26,18 +27,26 @@ func PostCreate(c *gin.Context) {
 	post.Content = input.Content
 	post.UserID = c.GetUint("currentUserId")
 
-	var tag models.Tag
-	database.DB.Find(&tag, input.TagID)
-	database.DB.Create(&post).Association("Tags").Append(&tag)
+	// var tag models.Tag
+	// database.DB.Find(&tag, input.TagID)
+	// database.DB.Create(&post).Association("Tags").Append(&tag)
+	database.DB.Create(&post)
 	c.JSON(http.StatusOK, post)
 }
 
-func PostIndex(c *gin.Context) {
-	var posts []models.Post
-	database.DB.Find(&posts)
-	// database.DB.Preload(clause.Associations).Find(&posts)
+type PostQuery struct {
+	Page    int `form:"page,default=0"`
+	PageNum int `form:"pageNum,default=10"`
+}
 
-	c.JSON(http.StatusOK, posts)
+func PostIndex(c *gin.Context) {
+	var query PostQuery
+	c.ShouldBindQuery(&query)
+	var posts []models.Post
+	// database.DB.Find(&posts)
+	result := database.DB.Limit(query.PageNum).Offset(query.Page).Preload(clause.Associations).Find(&posts)
+
+	c.JSON(http.StatusOK, gin.H{"list": posts, "total": result.RowsAffected})
 }
 
 func PostIndexOfUser(c *gin.Context) {

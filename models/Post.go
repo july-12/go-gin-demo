@@ -7,4 +7,7 @@ type Post struct {
 	Comments []Comment `json:"-"`
 
 	Tags []Tag `json:"tags" gorm:"many2many:post_tags"`
+
+	UserID uint `json:"-"`
+	Anchor User `json:"anchor" gorm:"foreignKey:UserID"`
 }

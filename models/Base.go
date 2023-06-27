@@ -4,8 +4,8 @@ import "time"
 
 type BaseModel struct {
 	ID        uint      `json:"id" gorm:"primarykey"`
-	CreatedAt time.Time `json:"createAt"`
-	UpdatedAt time.Time `json:"updateAt"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type BaseModelWithAuthor struct {
