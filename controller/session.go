@@ -12,7 +12,8 @@ import (
 )
 
 type formInput struct {
-	Name     string `form:"name" json:"name" binding:"required"`
+	Name     string `form:"name" json:"name"`
+	Phone    string `form:"name" json:"phone"`
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
@@ -21,6 +22,7 @@ func Signup(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&input); err == nil {
 		user.Name = input.Name
+		user.Phone = input.Phone
 		password := []byte(input.Password)
 		if passowrdHash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost); err != nil {
 			log.Println("err: ", err)
@@ -31,7 +33,7 @@ func Signup(c *gin.Context) {
 			if token, err := utils.GenerateToken(user.ID); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"JwtFail": err})
 			} else {
-				c.JSON(http.StatusOK, token)
+				c.JSON(http.StatusOK, gin.H{"token": token})
 				return
 			}
 		}
@@ -55,7 +57,7 @@ func Login(c *gin.Context) {
 			if token, err := utils.GenerateToken(user.ID); err != nil {
 				c.String(http.StatusNoContent, "")
 			} else {
-				c.JSON(http.StatusOK, token)
+				c.JSON(http.StatusOK, gin.H{"token": token})
 			}
 		}
 	} else {

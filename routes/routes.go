@@ -29,6 +29,7 @@ func PublicRoutes(r *gin.RouterGroup) {
 	r.GET("/posts/:id", controller.PostShow)
 	r.GET("/posts", controller.PostIndex)
 
+	r.GET("/user_info", controller.CurrentUser)
 }
 
 func ProtectRoutes(r *gin.RouterGroup) {
