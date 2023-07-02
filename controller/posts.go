@@ -11,7 +11,7 @@ import (
 
 type postFormInput struct {
 	Title   string `form:"title" json:"title" binding:"required"`
-	Content string `form:"content" json:"Content"`
+	Content string `form:"content" json:"content"`
 	TagID   uint   `form:"tagId" json:"tagId"`
 }
 
@@ -63,6 +63,6 @@ func PostShow(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Post
 	database.DB.Find(&post, id)
-	database.DB.Preload("Tags").Find(&post, id)
+	database.DB.Preload("Tags").Preload("Anchor").Find(&post, id)
 	c.JSON(http.StatusOK, post)
 }

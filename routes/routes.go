@@ -34,9 +34,9 @@ func PublicRoutes(r *gin.RouterGroup) {
 
 func ProtectRoutes(r *gin.RouterGroup) {
 
-	r.GET("/posts/:id/comments", controller.CommentShow)
 	r.POST("/posts/:id/tags", controller.TagsIndexByPost)
 	r.POST("/posts/:id/comments", controller.CommentCreate)
+	r.GET("/posts/:id/comments", controller.CommentShow)
 	r.POST("/posts", controller.PostCreate)
 
 	r.PUT("/tags/:id", controller.TagUpdate)
