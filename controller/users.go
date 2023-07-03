@@ -18,7 +18,7 @@ func UserIndex(c *gin.Context) {
 func UserShow(c *gin.Context) {
 	id := c.Param("id")
 	var user models.User
-	database.DB.Find(&user, id)
+	database.DB.Where("name = ?", id).First(&user)
 	// database.DB.Preload("Posts").Find(&user, id)
 	// database.DB.Preload(clause.Associations).Find(&user, id)
 	// database.DB.Model(&models.User{}).Preload("Posts").Find(&user, id)
